@@ -4,7 +4,7 @@
 
  COPY package*.json ./
 
- RUN yarn build
+ RUN yarn install
 
  COPY . .
 
@@ -14,4 +14,4 @@
 
  EXPOSE 9000
 
- CMD [ "node","dist/main"]
+ CMD [ "yarn","start"]
