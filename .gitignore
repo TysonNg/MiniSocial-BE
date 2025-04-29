@@ -4,7 +4,7 @@
 /build
 
 #Sensitive 
-serviceAccountKey.json
+src/firebase/serviceAccountKey.json
 
 # Logs
 logs
