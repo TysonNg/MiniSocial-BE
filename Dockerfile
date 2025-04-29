@@ -4,7 +4,7 @@
 
  COPY package*.json ./
 
- RUN yarn build
+ RUN yarn install
 
  COPY . .
 
