@@ -14,4 +14,4 @@
 
  EXPOSE 9000
 
- CMD ["yarn", "start", "--port", "$PORT"]
+ CMD ["yarn", "start", "--port", "9000"]
