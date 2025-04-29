@@ -14,4 +14,4 @@
 
  EXPOSE 9000
 
- CMD [ "yarn","start"]
+ CMD [ "node","dist/main"]
