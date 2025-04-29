@@ -1,0 +1,106 @@
+services:
+  app: 
+    build: .
+    ports:
+      - '9000:9000'
+    command: yarn dev
+    environment:
+      PORT: 9000
+    env_file:
+      - .env 
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+    networks:
+      - elk
+      
+  db:
+    image: postgres:latest
+    ports:
+      - "1507:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - elk
+  redis:
+    image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    volumes:
+      - "./config/redis/redis.conf:/usr/local/etc/redis/redis.conf"
+      - redis_data:/data
+    restart: always 
+    networks:
+      - elk
+  elasticsearch:
+    image: elasticsearch:8.17.4
+    container_name: elasticsearch_container
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      
+
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - elk
+    restart: always
+  
+  kibana:
+    image: kibana:8.17.4
+    container_name: kibana_container
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk
+    restart: always
+
+  logstash:
+    image: logstash:8.17.4
+    container_name: logstash_container
+    ports:
+      - "9600:9600"
+    volumes:
+      - "./config/logstash/logstash.conf:/logstash_dir/logstash.conf"
+      - "./config/logstash/postgresql-42.7.5.jar:/logstash_dir/postgresql.jar"
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+    command: logstash -f /logstash_dir/logstash.conf
+    depends_on:
+      - elasticsearch
+      - db
+    networks:
+      - elk
+    restart: always
+
+volumes:
+  postgres_data:
+  redis_data:
+  es_data:
+
+networks:
+  elk:
+    driver: bridge

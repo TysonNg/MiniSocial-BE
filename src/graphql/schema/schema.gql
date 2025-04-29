@@ -1,0 +1,64 @@
+type Post{
+    postId: ID!
+    user: User!
+    userId: String!
+    content: String! 
+    imgsUrl: [String!]
+    likes: [Like!]
+    comments: [Comment!]
+    createAt: String!
+    updatedAt: String!
+}
+
+type User{
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+    avatarUrl: String
+    bio: String
+    post: [Post!]
+    comments: [Comment!]
+    likes: [Like!]
+    following: [User!]
+    followers: [User!]
+    createAt: String!
+}
+
+type Comment{
+    commentId: ID!
+    user: User!
+    userId: String!
+    post: Post!
+    postId: String!
+    content: String!
+    comment_left: Int!
+    comment_right: Int!
+    parent_comment: Comment
+    parent_comment_id: String
+    isDeleted: Boolean!
+    createdAt: String!
+}
+
+type Like {
+  likeId: ID!
+  user: User!
+  userId: String!
+  post: Post!
+  postId: String!
+  createdAt: String!
+}
+
+type Query{
+    getAllPosts: [Post!]!
+    findPostById(postId: String!): Post
+}
+
+input CreatePostInput {
+  content: String!
+  imgsUrl: [String]
+}
+
+type Mutation {
+  createPost(payload: CreatePostInput!): Post!
+}
