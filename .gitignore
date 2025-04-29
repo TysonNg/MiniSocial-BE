@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+#Sensitive 
+serviceAccountKey.json
+
 # Logs
 logs
 *.log
