@@ -217,6 +217,7 @@ export class UserService {
     .set({name: payload.userName,bio: payload.bio, avatarUrl: payload.imgUrl})
     .execute()
 
+    await this.redisService.delete('allPosts')
     return updatedUser
   }
 
