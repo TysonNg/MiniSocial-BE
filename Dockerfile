@@ -8,10 +8,10 @@
 
  COPY . .
 
- ENV PORT=9000
+ ENV PORT=10000
 
  ENV NODE_OPTIONS="--max-old-space-size=4096"
 
- EXPOSE 9000
+ EXPOSE 10000
 
  CMD ["yarn", "start"]
