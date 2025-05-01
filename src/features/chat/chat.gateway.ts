@@ -42,7 +42,6 @@ export class ChatGateWay {
     const { userId } = client.handshake?.auth;
 
     await this.firebaseService.updateUserStatus(userId,'offline')
-
   }
 
   @UseGuards(WsAuthGuard)
