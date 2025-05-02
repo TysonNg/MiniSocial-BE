@@ -48,6 +48,7 @@ export default class EslasticsearchService {
             name: user.name,
             email: user.email,
             bio: user.bio,
+            avatarurl: user.avatarUrl,
             createdAt: user.createdAt,
           },
         );

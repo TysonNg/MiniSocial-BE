@@ -20,6 +20,7 @@ import { generateTokenPair } from 'src/ultils/auth.ultils';
 import { SignInDto } from './dto/signin';
 import { KeyStoreInterface } from 'src/interfaces/keystore.interface';
 import { verify } from 'jsonwebtoken';
+import EslasticsearchService from 'src/elasticsearch/elasticsearch.service';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +33,7 @@ export class AuthService {
 
     private keyStoreService: KeyStoreService,
     private redisService: RedisService,
+    private elasticsearchService: EslasticsearchService
   ) {}
 
   //SignUp
@@ -78,7 +80,7 @@ export class AuthService {
       }),
     );
     await this.redisService.get(`keystore:${newUser.id}`);
-
+    await this.elasticsearchService.syncUsersToElasticsearch()
     return {
       user: {
         name,
