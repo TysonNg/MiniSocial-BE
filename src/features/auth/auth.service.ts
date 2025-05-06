@@ -20,7 +20,7 @@ import { generateTokenPair } from 'src/ultils/auth.ultils';
 import { SignInDto } from './dto/signin';
 import { KeyStoreInterface } from 'src/interfaces/keystore.interface';
 import { verify } from 'jsonwebtoken';
-import EslasticsearchService from 'src/elasticsearch/elasticsearch.service';
+import { ElasticsearchService } from 'src/elasticsearch/elasticsearch.service';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,7 @@ export class AuthService {
 
     private keyStoreService: KeyStoreService,
     private redisService: RedisService,
-    private elasticsearchService: EslasticsearchService
+    private elasticsearchService: ElasticsearchService
   ) {}
 
   //SignUp
@@ -41,7 +41,7 @@ export class AuthService {
     const { email, password, name } = payload;
     const user = await this.userRepository.findOne({ where: { email } });
     if (user) throw new ConflictException('User already registed!!!');
-
+    
     const { publicKey, privateKey } = generateKeyPairSync('rsa', {
       modulusLength: 4096,
       publicKeyEncoding: {
@@ -94,6 +94,8 @@ export class AuthService {
   //SignIn
   async signIn(payload: SignInDto): Promise<SignInInterface> {
     const { email, password } = payload;
+    console.log(payload);
+    
     const foundUser = await this.userRepository.findOne({ where: { email } });
     if (!foundUser) throw new NotFoundException('Pls check email or password');
 

@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { KeyStoreModule } from '../keystore/keystore.module';
 import { RedisModule } from 'src/redis/redis.module';
-import EslasticSearchModule from 'src/elasticsearch/elasticsearch.module';
+import {ElasticSearchModule} from 'src/elasticsearch/elasticsearch.module';
 
 
 @Module({
@@ -13,7 +13,7 @@ import EslasticSearchModule from 'src/elasticsearch/elasticsearch.module';
         TypeOrmModule.forFeature([UserEntity]),
         KeyStoreModule,
         RedisModule,
-        EslasticSearchModule
+        ElasticSearchModule
     ],
     controllers: [UserController],
     providers: [UserService],

@@ -6,14 +6,15 @@ import { UserEntity } from '../users/entities/user.entity';
 import { KeyStoreEntity } from '../keystore/entities/keystore.entity';
 import { KeyStoreModule } from '../keystore/keystore.module';
 import { RedisModule } from 'src/redis/redis.module';
-import EslasticSearchModule from 'src/elasticsearch/elasticsearch.module';
+import {ElasticSearchModule} from 'src/elasticsearch/elasticsearch.module';
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([UserEntity,KeyStoreEntity]),
     KeyStoreModule,
     RedisModule,
-    EslasticSearchModule
+    ElasticSearchModule,
+    
   ],
   controllers: [AuthController],
   providers: [AuthService],

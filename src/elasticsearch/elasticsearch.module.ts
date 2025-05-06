@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import EslasticsearchService from './elasticsearch.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/features/users/entities/user.entity';
+import { ElasticsearchService } from './elasticsearch.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]),ScheduleModule.forRoot()],
-  providers: [EslasticsearchService],
-  exports: [EslasticsearchService],
+  providers: [ElasticsearchService],
+  exports: [ElasticsearchService],
 })
-export default class EslasticSearchModule {}
+export class ElasticSearchModule {}

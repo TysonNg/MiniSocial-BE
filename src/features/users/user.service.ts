@@ -8,7 +8,7 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
 import { RedisService } from 'src/redis/redis.service';
-import EslasticsearchService from 'src/elasticsearch/elasticsearch.service';
+import {ElasticsearchService} from 'src/elasticsearch/elasticsearch.service';
 import { UserModel } from './models/user.model';
 import { PostModel } from '../posts/models/post.model';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -21,7 +21,7 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
 
     private redisService: RedisService,
-    private eslasticsearchService: EslasticsearchService
+    private eslasticsearchService: ElasticsearchService
   ) {}
 
   async findByUserId(userId: string){

@@ -10,8 +10,9 @@ import { AuthModule } from './features/auth/auth.module';
 import { LikeModule } from './features/likes/like.module';
 import { CommentModule } from './features/comments/comment.module';
 import { ChatModule } from './features/chat/chat.module';
-import ElasticSearchModule from './elasticsearch/elasticsearch.module';
+import {ElasticSearchModule} from './elasticsearch/elasticsearch.module';
 import { StoryModule } from './features/story/story.module';
+import { NotifyModule } from './features/notification/notify.module';
 // import { GraphqlModule } from './graphql/graphql.module';
 
 @Module({
@@ -30,7 +31,8 @@ import { StoryModule } from './features/story/story.module';
     CommentModule,
     ChatModule,
     ElasticSearchModule,
-    StoryModule
+    StoryModule,
+    NotifyModule
     // GraphqlModule
   ],
 })

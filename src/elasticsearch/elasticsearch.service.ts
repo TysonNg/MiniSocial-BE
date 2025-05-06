@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
-export default class EslasticsearchService {
+export class ElasticsearchService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
@@ -39,7 +39,7 @@ export default class EslasticsearchService {
   async syncUsersToElasticsearch() {
     try {
       const users = await this.userRepository.find();
-
+      
       for (const user of users) {
         await axios.put(
           `${process.env.ELASTICSEARCH_URL}/users/_doc/${user.id}`,

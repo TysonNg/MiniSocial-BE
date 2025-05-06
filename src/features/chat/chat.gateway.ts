@@ -10,38 +10,35 @@ import { Server, Socket } from 'socket.io';
 import { FireBaseService } from 'src/firebase/firebase.service';
 import { UserData, WsAuthGuard } from 'src/guards/ws-auth.guards';
 
+
 @WebSocketGateway({
   transports: ['websocket'],
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
   },
+  namespace: '/chat'
 })
 export class ChatGateWay {
-  private userSocketMap = new Map<string, Socket>()
+  private userSocketMap = new Map<string, Socket>();
 
-  constructor(
-    private readonly firebaseService: FireBaseService,
-  ) {}
+  constructor(private readonly firebaseService: FireBaseService,  ) {}
 
   @WebSocketServer()
   server: Server;
 
   async handleConnection(client: Socket) {
-
     const { userId } = client.handshake?.auth;
 
-    
     this.userSocketMap.set(userId, client);
-    
-    await this.firebaseService.updateUserStatus(userId,'online')
-  }
 
+    await this.firebaseService.updateUserStatus(userId, 'online');
+  }
 
   async handleDisconnect(client: Socket) {
     const { userId } = client.handshake?.auth;
 
-    await this.firebaseService.updateUserStatus(userId,'offline')
+    await this.firebaseService.updateUserStatus(userId, 'offline');
   }
 
   @UseGuards(WsAuthGuard)
@@ -50,14 +47,22 @@ export class ChatGateWay {
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: { toUserId: string; message: string },
   ) {
-    const fromUser:UserData = client.data.user;
+    const fromUser: UserData = client.data.user;
     if (!fromUser) return;
 
     const { toUserId, message } = payload;
-    
+
     // save message into firebase store
-    if(fromUser.id && toUserId && message){
-      await this.firebaseService.saveMessage(fromUser.id,fromUser.url,fromUser.userName,toUserId,message, false,[])
+    if (fromUser.id && toUserId && message) {
+      await this.firebaseService.saveMessage(
+        fromUser.id,
+        fromUser.url,
+        fromUser.userName,
+        toUserId,
+        message,
+        false,
+        [],
+      );
     }
 
     console.log(
@@ -67,26 +72,28 @@ export class ChatGateWay {
     const socket = this.userSocketMap.get(toUserId);
 
     if (socket) {
-      
+            
       socket.emit('privateMessage', {
-        user:{
+        user: {
           userName: fromUser.userName,
           imgUrl: fromUser.url,
           fromId: fromUser.id,
-          toId: toUserId
-        }, message 
+          toId: toUserId,
+        },
+        message,
       });
-
-      
     } else {
       console.log(`User ${toUserId} not connected`);
     }
-    
-    client.emit('privateMessageSent', { user:{
-      userName: fromUser.userName,
-      imgUrl: fromUser.url
-    }, message });
-   
+
+    client.emit('privateMessageSent', {
+      user: {
+        userName: fromUser.userName,
+        imgUrl: fromUser.url,
+      },
+      message,
+    });
+
     this.server.emit('reply', 'loadinggg.....');
   }
 
@@ -94,28 +101,50 @@ export class ChatGateWay {
   @SubscribeMessage('getHistoryPrivateMessages')
   async handleGetMessages(
     @ConnectedSocket() client: Socket,
-    @MessageBody() toUserId: string
+    @MessageBody() toUserId: string,
   ) {
-    console.log(toUserId);
+    const fromUser: UserData = client.data.user;
+    const historyMessages = await this.firebaseService.getMessages(
+      fromUser.id,
+      toUserId,
+    );
     
-    const fromUser: UserData = client.data.user
-    const historyMessages = await this.firebaseService.getMessages(fromUser.id,toUserId)
-
-    client.emit('historyMessagesSent',{historyMessages})
+    client.emit('historyMessagesSent', { historyMessages });
   }
 
-  
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('markMessagesAsRead')
   async handleMarkMessagesAsRead(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: {toId: string}
+    @MessageBody() payload: { toId: string },
   ) {
-    const{toId} = payload
-    
-    const fromUser: UserData = client.data.user
-    console.log('vao r',fromUser);
+    const { toId } = payload;
 
-    await this.firebaseService.updateStatusMessage(fromUser.id,toId,false)
+    const fromUser: UserData = client.data.user;
+
+    await this.firebaseService.updateStatusMessage(fromUser.id, toId, false);
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('numOfNotYetReadMessage')
+  async getNumOfNotYetReadMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: {userId: string}
+  ){
+    const {userId} = payload
+    const numOfNotYetReadMessage = await this.firebaseService.numOfNotYetReadMessage(userId)
+    client.emit('numOfNotYetReadMessage',{
+      num: numOfNotYetReadMessage.size
+    })
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('getAllMessageOfUser')
+  async getAllMessageOfUser(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: {userId: string}
+  ){
+    const {userId} = payload
+
   }
 }

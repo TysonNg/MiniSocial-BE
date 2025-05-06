@@ -26,6 +26,14 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1')
 
+  process.on('uncaughtException', err => {
+    console.error('Uncaught Exception:', err);
+  });
+  
+  process.on('unhandledRejection', err => {
+    console.error('Unhandled Rejection:', err);
+  });
+
   await app.startAllMicroservices();
   await app.listen(process.env.PORT ?? 9000,'0.0.0.0');
 }

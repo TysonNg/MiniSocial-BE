@@ -78,7 +78,6 @@ export class LikeService {
   async getUsersLikeOfPost(postId: string) {
     const cacheUsers = await this.redisService.SMEMBERS(`post:${postId}:likes`);
     if (cacheUsers) {
-      console.log('cache', cacheUsers);
 
       return {
         
