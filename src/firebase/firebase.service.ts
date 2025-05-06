@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import * as keyService from './keyService.json';
+// import * as keyService from './keyService.json';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -16,8 +16,7 @@ export class FireBaseService implements OnModuleInit {
       );
     }
 
-    const serviceAccount =
-      keyService ?? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+    const serviceAccount =JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -143,10 +142,4 @@ export class FireBaseService implements OnModuleInit {
     }
   }
 
-  async getAllMessageOfUser(userId: string) {
-    const snapshot = await this.db
-      .collection('messages')
-      .where('toId', '==', userId)
-      .where('chatParticipants', 'array-contains', userId);
-  }
 }
