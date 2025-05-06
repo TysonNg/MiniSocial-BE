@@ -3,6 +3,8 @@
 /node_modules
 /build
 
+#Sensitive
+/src/firebase/keyService.json
 
 
 # Logs
