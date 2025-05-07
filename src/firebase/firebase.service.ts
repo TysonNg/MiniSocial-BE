@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import * as keyService from './keyService.json';
+// import * as keyService from './keyService.json';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -16,8 +16,8 @@ export class FireBaseService implements OnModuleInit {
       );
     }
 
-    const serviceAccount =
-      keyService ?? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      // keyService ??
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
