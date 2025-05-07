@@ -94,8 +94,6 @@ export class AuthService {
   //SignIn
   async signIn(payload: SignInDto): Promise<SignInInterface> {
     const { email, password } = payload;
-    console.log(payload);
-    
     const foundUser = await this.userRepository.findOne({ where: { email } });
     if (!foundUser) throw new NotFoundException('Pls check email or password');
 
@@ -116,6 +114,7 @@ export class AuthService {
 
     const { id } = foundUser;
     const tokens = generateTokenPair({ id, email }, privateKey);
+    console.log("Tokens generated");
     await this.keyStoreService.createKeyToken({
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token,
@@ -130,6 +129,7 @@ export class AuthService {
       keyStore.accessToken = tokens.access_token;
       keyStore.refreshToken = tokens.refresh_token;
       await this.redisService.set(`keystore:${id}`, JSON.stringify(keyStore));
+      console.log("Saved to keystore"); 
       return {
         user: {
           id: foundUser.id,
@@ -149,6 +149,7 @@ export class AuthService {
         userId: id,
       }),
     );
+    console.log("Saved to keystore"); 
     return {
       user: {
         id: foundUser.id,
