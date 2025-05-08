@@ -13,6 +13,7 @@ import { ChatModule } from './features/chat/chat.module';
 import {ElasticSearchModule} from './elasticsearch/elasticsearch.module';
 import { StoryModule } from './features/story/story.module';
 import { NotifyModule } from './features/notification/notify.module';
+import { HealthModule } from './health/health.module';
 // import { GraphqlModule } from './graphql/graphql.module';
 
 @Module({
@@ -32,7 +33,8 @@ import { NotifyModule } from './features/notification/notify.module';
     ChatModule,
     ElasticSearchModule,
     StoryModule,
-    NotifyModule
+    NotifyModule,
+    HealthModule
     // GraphqlModule
   ],
 })
