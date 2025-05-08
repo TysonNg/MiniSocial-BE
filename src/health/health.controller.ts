@@ -1,4 +1,4 @@
-import { Controller, Get, Head, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Head } from "@nestjs/common";
 
 
 @Controller()
