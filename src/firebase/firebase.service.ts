@@ -16,8 +16,8 @@ export class FireBaseService implements OnModuleInit {
       );
     }
 
-    const serviceAccount = 
-      keyService ??JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+    const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      // keyService ??
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
