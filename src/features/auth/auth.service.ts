@@ -114,7 +114,6 @@ export class AuthService {
 
     const { id } = foundUser;
     const tokens = generateTokenPair({ id, email }, privateKey);
-    console.log("Tokens generated");
     await this.keyStoreService.createKeyToken({
       accessToken: tokens.access_token,
       refreshToken: tokens.refresh_token,
@@ -122,34 +121,34 @@ export class AuthService {
       publicKey,
       userId: id,
     });
-    const getKeyStoreRedis = await this.redisService.get(`keystore:${id}`);
-    if (getKeyStoreRedis) {
-      const keyStore: KeyStoreInterface = JSON.parse(getKeyStoreRedis ?? '');
+    // const getKeyStoreRedis = await this.redisService.get(`keystore:${id}`);
+    // if (getKeyStoreRedis) {
+    //   const keyStore: KeyStoreInterface = JSON.parse(getKeyStoreRedis ?? '');
 
-      keyStore.accessToken = tokens.access_token;
-      keyStore.refreshToken = tokens.refresh_token;
-      await this.redisService.set(`keystore:${id}`, JSON.stringify(keyStore));
-      console.log("Saved to keystore"); 
-      return {
-        user: {
-          id: foundUser.id,
-          email: foundUser.email,
-          name: foundUser.name,
-        },
-        tokens,
-      };
-    }
-    await this.redisService.set(
-      `keystore:${id}`,
-      JSON.stringify({
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
-        publicKey,
-        refreshTokenUsed: [],
-        userId: id,
-      }),
-    );
-    console.log("Saved to keystore"); 
+    //   keyStore.accessToken = tokens.access_token;
+    //   keyStore.refreshToken = tokens.refresh_token;
+    //   await this.redisService.set(`keystore:${id}`, JSON.stringify(keyStore));
+    //   console.log("Saved to keystore"); 
+    //   return {
+    //     user: {
+    //       id: foundUser.id,
+    //       email: foundUser.email,
+    //       name: foundUser.name,
+    //     },
+    //     tokens,
+    //   };
+    // }
+    // await this.redisService.set(
+    //   `keystore:${id}`,
+    //   JSON.stringify({
+    //     accessToken: tokens.access_token,
+    //     refreshToken: tokens.refresh_token,
+    //     publicKey,
+    //     refreshTokenUsed: [],
+    //     userId: id,
+    //   }),
+    // );
+    // console.log("Saved to keystore"); 
     return {
       user: {
         id: foundUser.id,
